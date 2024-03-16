@@ -1,3 +1,9 @@
 03/16/24
 - Implemented "get_length_of_playlist" function. This function allows us to calculate the total number of seconds
 - a playlist is (that can be compared to the destination_number of seconds)
+
+03/16/24
+- Implented some more functions, namely a function to check if a playlist exists in a users account (the playlist we will be changing)
+- Also a function to clear the playlist (again our playlist we will be changing)
+- And impleneted the main function which creates the playlist itself inside of a users account once authenticated
+- Also made a function that very simply comapres the length of the goal playlist and our playlist created so far
