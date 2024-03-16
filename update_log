@@ -1,0 +1,3 @@
+03/16/24
+- Implemented "get_length_of_playlist" function. This function allows us to calculate the total number of seconds
+- a playlist is (that can be compared to the destination_number of seconds)
