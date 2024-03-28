@@ -16,8 +16,8 @@ redirect_uri = "http://localhost:8888/callback"
 
 # OAuth Method for accessing Spotify Data (individual user accounts, browser verification required)
 scope = ["playlist-modify-public", "playlist-modify-private", "user-top-read"]
-user = input("Username for account: ")
-def OAuth(): 
+def OAuth(user: str):     
+    global sp
     token = util.prompt_for_user_token(username=user, scope=scope, client_id=SPOTIPY_CLIENT_ID, client_secret=SPOTIPY_CLIENT_SECRET, redirect_uri=redirect_uri, cache_path=".cache")
     sp = Spotify(auth=token)
     return sp
@@ -139,11 +139,16 @@ def recommendations_func(choice: int) -> list: # NOT DONE
         print("recommendations_func ends here...")
         return recs
 
-sp = OAuth()
-
-songs = sp.current_user_top_tracks(limit=5, time_range="long_term") # test functionality // Max limit is 50 top tracks
-songs = _get_OPTION(songs, 'id')        # change songs into a list holding song ID's
-recommendations = recommendations_func(3) # recommendation takes at most 5 seed tracks
-add_to_playlist(recommendations)
-
+def set_up(username: str):
+    global sp
+    global user
+    user = username
+    return OAuth(user=user)
     
+
+def main():
+    user = "chasequigley9"
+    sp=OAuth(user=user)
+    
+if __name__ == '__main__':
+    main()
