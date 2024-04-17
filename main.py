@@ -15,7 +15,7 @@ redirect_uri = "http://localhost:8888/callback"
 # uses client_id for the app and client_secret to connect
 
 # OAuth Method for accessing Spotify Data (individual user accounts, browser verification required)
-scope = ["playlist-modify-public", "playlist-modify-private", "user-top-read"]
+scope = ["playlist-modify-public", "playlist-modify-private", "user-top-read", "playlist-read-private", "user-library-read"]
 def OAuth(user: str):     
     global sp
     token = util.prompt_for_user_token(username=user, scope=scope, client_id=SPOTIPY_CLIENT_ID, client_secret=SPOTIPY_CLIENT_SECRET, redirect_uri=redirect_uri, cache_path=".cache")
@@ -30,20 +30,7 @@ def ClientCred():
 # go to spotify.com --> account settings --> edit profile 
 # spotify ID 
 
-# TEST FUNCTION ::: ONLY WORKS WITH CLIENT_CREDS version of sp
-# Function returns all playlists PUBLICLY accesible 
-def get_user_playlist() -> dict:
-    user = input("Please enter Spotify username here: ")
-    playlists = sp.user_playlists(user)
-    while playlists:
-        for i, playlist in enumerate(playlists['items']):
-            print("%4d %s %s" % (i + 1 + playlists['offset'], playlist['uri'],  playlist['name']))
-        if playlists['next']:
-            playlists = sp.next(playlists)
-        else:
-            playlists = None
-    return playlists
-
+# 04/17/24 -- Works
 def get_song_duration(track: str) -> int:
     # can give info of track by ID or URL or URI
     trackInfo = sp.track(track)
@@ -54,17 +41,24 @@ def get_song_duration(track: str) -> int:
     # print(total_seconds)
     return total_seconds
 
-def get_length_of_playlist(playlist: dict) -> int:
+# 04/17/24 -- Works
+def get_length_of_playlist(playlist_id) -> int: # accuratley working 
     total = 0
+    playlist = sp.playlist(playlist_id)
     for item in playlist['tracks']['items']:
         # print(item['track']['id'])
-        total += get_song_duration(sp, item['track']['id'])
+        total += get_song_duration(item['track']['id'])
     print(str(total) + " total seconds in the playlist, " + playlist['name'])
-    
+    return total
+# ON A TEST RUN
+# get_length_playlist returned the correct seconds in the playlist offset by ~3 minutes
+# we can implement a "grace offset" which allows our program to be off by a given time (EX: 5 Minutes)
+
+# 04/17/24 -- Not Tested
 def is_valid(playlist_length: int, goal_length: int) -> bool:
         return playlist_length == goal_length
     
-    
+# 04/17/24 -- Not Tested  
 def create_playlist() -> None:
     user_has = _user_has_playlist(user, "MusiTime")  
     if user_has is not None:
@@ -76,15 +70,15 @@ def create_playlist() -> None:
         print("Successfully created MusiTime Playlist!")
         return
     
-
+# 04/17/24 -- Works
 def _user_has_playlist(user_id, playlist_name): # working
     playlists = sp.user_playlists(user_id)
     for playlist in playlists['items']:
         if playlist['name'] == playlist_name:
             return playlist['id']
     print("_user_has_playlist ends here...")
-    return None
-
+    return 
+# 04/17/24 -- Works
 def _clear_playlist(playlist_id):   # working
     # Get all tracks in the playlist
     results = sp.playlist_tracks(playlist_id)
@@ -97,7 +91,7 @@ def _clear_playlist(playlist_id):   # working
         tracks = results['items']
     print("_clear_playlist ends here...")
         
-        
+# 04/17/24 -- Works        
 def _get_OPTION(songs: list, OPTION: str) -> list: # function returns id's of songs in given playlist
     tracks = songs["items"]
     return_list = []
@@ -105,50 +99,70 @@ def _get_OPTION(songs: list, OPTION: str) -> list: # function returns id's of so
         return_list.append(track[OPTION])
     print("_get_OPTION ends here...")
     return return_list
-
+# 04/17/24 -- Works
 def add_to_playlist(songs: list) -> None: # always the MusiTime playlist; assumes list being passed is ID's 
     _clear_playlist(_user_has_playlist(user, "MusiTime"))
     sp.user_playlist_add_tracks(user=user,playlist_id=_user_has_playlist(user, "MusiTime"), tracks=songs, position=None)
     print("add_to_playlist ends here...")
 
-def recommendations_func(choice: int) -> list: # NOT DONE
-    if choice == 1: # doesnt break (but also doesnt return anythin rn)
-        seed_genres = sp.recommendation_genre_seeds()
-        recomendations = sp.recommendations(seed_genres=seed_genres, limit=100)
-        recs = []
-        for track in recomendations['tracks']:
-            recs.append(track['id'])
-        print("recommendations_func ends here...")
-        return recs
-    elif choice == 2: # doesnt work rn
-        seed_artists = sp.current_user_top_artists(limit=5, time_range="long_term")
-        recomendations = sp.recommendations(seed_artists=seed_artists, limit=100)
-        recs = []
-        for track in recomendations['tracks']:
-            recs.append(track['id'])
-        print("recommendations_func ends here...")
-        return recs
-    else: # works rn
-        songs = sp.current_user_top_tracks(limit=5, time_range="long_term")
-        songs = _get_OPTION(songs, "id")
-        recomendations = sp.recommendations(seed_tracks=songs, limit=100)
-        recs = []
-        for track in recomendations['tracks']:
-            print(track['name'])
-            recs.append(track['id'])
-        print("recommendations_func ends here...")
-        return recs
-
-def set_up(username: str):
+# 04/17/24 -- Not Working
+def rec_artists_songs(artists: list) -> list:
+    recommendations = sp.recommendations(seed_artists=artists, limit=100)
+    recs = []
+    for track in recommendations['tracks']:
+        recs.append(track['id'])
+    print("rec_artists_songs ends here...")
+    return recs
+# 04/17/24 -- Works
+def rec_genre_songs(genres: list) -> list:
+    recommendations = sp.recommendations(seed_genres=genres, limit=100)
+    recs = []
+    for track in recommendations['tracks']:
+        recs.append(track['id'])
+    print("rec_genre_songs ends here...")
+    return recs
+# 04/17/24 -- Working
+def rec_ttracks_songs() -> list:        # recommends top tracks
+    songs = sp.current_user_top_tracks(limit=5, time_range="long_term")
+    songs = _get_OPTION(songs, "id")
+    recomendations = sp.recommendations(seed_tracks=songs, limit=100)
+    recs = []
+    for track in recomendations['tracks']:
+        # print(track['name'])
+        recs.append(track['id'])
+    print("rec_songs ends here...")
+    return recs
+    
+# 04/17/24 -- works-ish; not perfect, not bad
+# THIS IS WHERE THE ALGORITHM IS NEEDED
+def find_songs_in_length(recs: list, goal_length: int) -> list:
+    if goal_length <= 0:                # EDGE CASE: user provides length less than or equal to 0
+        return ["43JK3XJKQ5MJ7ddlF0ylUX"]
+    if goal_length > 300:               # EDGE CASE: user wants a playlist longer than we can provide
+        goal_length = 300
+    goal_length *= 60           # increase goal_length to account for seconds rather than minutes (EX: 20 minutes = 1200 seconds)
+    total_length = 0
+    song_to_add = []
+    for song in recs:
+        if get_song_duration(song) + total_length <= goal_length:
+            total_length += get_song_duration(song)
+            song_to_add.append(song)
+    return song_to_add
+# 04/17/24 -- Works
+def set_up(username: str): # FOR USAGE WITH: flask_TEST.py
     global sp
     global user
     user = username
     return OAuth(user=user)
-    
 
-def main():
+# 04/17/24 -- Works
+def main():                 # FOR USAGE WITH: main.py; DRIVER CODE to TEST functions
+    global user
     user = "chasequigley9"
     sp=OAuth(user=user)
-    
+    recs = rec_ttracks_songs()
+    # recs = rec_genre_songs(["pop", "country", "hip-hop"])
+    songs = find_songs_in_length(recs, 25)
+    add_to_playlist(songs)
 if __name__ == '__main__':
     main()
