@@ -7,3 +7,4 @@
 - Also a function to clear the playlist (again our playlist we will be changing)
 - And impleneted the main function which creates the playlist itself inside of a users account once authenticated
 - Also made a function that very simply comapres the length of the goal playlist and our playlist created so far
+- implemented dingle
