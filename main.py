@@ -105,8 +105,20 @@ def add_to_playlist(songs: list) -> None: # always the MusiTime playlist; assume
     sp.user_playlist_add_tracks(user=user,playlist_id=_user_has_playlist(user, "MusiTime"), tracks=songs, position=None)
     print("add_to_playlist ends here...")
 
+
+
+def get_artist_id(artists):
+    artist_ids = []
+    for artist in artists:
+        search_results = sp.search(q="artist:" + artist, type='artist')
+        if 'artists' in search_results and 'items' in search_results['artists']:
+            for item in search_results['artists']['items']:
+                if (len(artist_ids) < 5):
+                    artist_ids.append(item['id'])
+    return artist_ids
 # 04/17/24 -- Not Working
 def rec_artists_songs(artists: list) -> list:
+    artists = get_artist_id(artists)
     recommendations = sp.recommendations(seed_artists=artists, limit=100)
     recs = []
     for track in recommendations['tracks']:
@@ -162,7 +174,10 @@ def main():                 # FOR USAGE WITH: main.py; DRIVER CODE to TEST funct
     sp=OAuth(user=user)
     recs = rec_ttracks_songs()
     # recs = rec_genre_songs(["pop", "country", "hip-hop"])
-    songs = find_songs_in_length(recs, 25)
+    # recs = rec_artists_songs([])
+    # recs = rec_artists_songs(['Morgan Wallen', 'Juice WRLD', 'Zach Bryan'])
+    # get_artist_id(['Morgan Wallen', 'Juice WRLD', 'Zach Bryan'])
+    songs = find_songs_in_length(recs, 60)
     add_to_playlist(songs)
 if __name__ == '__main__':
     main()

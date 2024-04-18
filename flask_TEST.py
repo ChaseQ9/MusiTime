@@ -8,7 +8,7 @@ def login():
     if request.method == 'POST':
         user = request.form['nm']
         sp = set_up(user)
-        length = request.form['length']
+        length = int(request.form['length'])
         recomendations = rec_ttracks_songs()
         songs = find_songs_in_length(recomendations, length)
         add_to_playlist(songs)
