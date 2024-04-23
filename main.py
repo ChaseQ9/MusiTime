@@ -5,6 +5,8 @@ from spotipy.oauth2 import SpotifyOAuth
 from spotipy import util
 from dotenv import load_dotenv
 import os
+from utils import Song
+import random
 
 load_dotenv()
 SPOTIPY_CLIENT_ID = os.getenv("CLIENT_ID")
@@ -157,16 +159,37 @@ def find_songs_in_length(recs: list, goal_length: int) -> list:
     
     total_length = 0
     song_to_add = []
-    # could implement something like quicksort and choose songs that way
-    # basically would work where we choose an index (any index)
-    # that is less than or equal to the difference between goal_length - total_length
-    # we find this value by iterating (from the end of the list) until we find a value that is less than or equal
-    # to goal_length - total_length
+    
+    # changing here now
+    songs = []
     for song in recs:
-        song_length = get_song_duration(song)
-        if song_length + total_length <= goal_length + OFFSET:
-            total_length += song_length
-            song_to_add.append(song)
+        songs.append(Song(get_song_duration(song), song))
+    # song.time and song.id hold respective songs id and time
+    # we can use this to call quicksort on the associated times 
+    # and use the ids as the songs we are going to return back to the program
+    
+    def quicksort(arr): # sort the songs
+        if len(arr) <= 1:
+            return arr
+        else:
+            pivot = arr[0]
+            left = [x for x in arr[1:] if x.time < pivot.time]
+            right = [x for x in arr[1:] if x.time >= pivot.time]
+            return quicksort(left) + [pivot] + quicksort(right)
+    songs = quicksort(songs)
+    for song in songs:
+        if song.time + total_length <= goal_length + OFFSET:
+            total_length += song.time 
+            song_to_add.append(song.id)
+    return song_to_add
+
+    # for song in recs:
+    #     song_length = get_song_duration(song)
+    #     if song_length + total_length <= goal_length + OFFSET:
+    #         total_length += song_length
+    #         song_to_add.append(song)
+    
+    
     return song_to_add
 # 04/17/24 -- Works
 def set_up(username: str): # FOR USAGE WITH: flask_TEST.py
