@@ -9,8 +9,9 @@ def login():
         user = request.form['nm']
         sp = set_up(user)
         length = int(request.form['length'])
+        long_to_short = bool(request.form['long_to_short'])
         recomendations = rec_ttracks_songs()
-        songs = find_songs_in_length(recomendations, length)
+        songs = find_songs_in_length(recomendations, length, long_to_short)
         add_to_playlist(songs)
         return render_template('success.html')
     else:

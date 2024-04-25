@@ -6,7 +6,6 @@ from spotipy import util
 from dotenv import load_dotenv
 import os
 from utils import Song
-import random
 
 load_dotenv()
 SPOTIPY_CLIENT_ID = os.getenv("CLIENT_ID")
@@ -150,7 +149,7 @@ def rec_ttracks_songs() -> list:        # recommends top tracks
     
 # 04/17/24 -- works-ish; not perfect, not bad
 # THIS IS WHERE THE ALGORITHM IS NEEDED
-def find_songs_in_length(recs: list, goal_length: int) -> list:
+def find_songs_in_length(recs: list, goal_length: int, long_to_short: bool = None) -> list:
     if goal_length <= 0:                # EDGE CASE: user provides length less than or equal to 0
         return ["43JK3XJKQ5MJ7ddlF0ylUX"]
     if goal_length > 300:               # EDGE CASE: user wants a playlist longer than we can provide
@@ -168,26 +167,25 @@ def find_songs_in_length(recs: list, goal_length: int) -> list:
     # we can use this to call quicksort on the associated times 
     # and use the ids as the songs we are going to return back to the program
     
-    def quicksort(arr): # sort the songs
+    def quicksort(arr, rev: bool): # sort the songs
         if len(arr) <= 1:
             return arr
         else:
             pivot = arr[0]
             left = [x for x in arr[1:] if x.time < pivot.time]
             right = [x for x in arr[1:] if x.time >= pivot.time]
-            return quicksort(left) + [pivot] + quicksort(right)
-    songs = quicksort(songs)
+            if rev:
+                return quicksort(right, rev) + [pivot] + quicksort(left, rev)
+            else:
+                return quicksort(left, rev) + [pivot] + quicksort(right, rev)
+    if long_to_short is not None:       # if long_to_short is None, it acts as a "dont care" order of the playlist
+        songs = quicksort(songs, long_to_short)
     for song in songs:
         if song.time + total_length <= goal_length + OFFSET:
             total_length += song.time 
             song_to_add.append(song.id)
     return song_to_add
 
-    # for song in recs:
-    #     song_length = get_song_duration(song)
-    #     if song_length + total_length <= goal_length + OFFSET:
-    #         total_length += song_length
-    #         song_to_add.append(song)
     
     
     return song_to_add
@@ -209,6 +207,6 @@ def main():                 # FOR USAGE WITH: main.py; DRIVER CODE to TEST funct
     # recs = rec_artists_songs(['Morgan Wallen', 'Juice WRLD', 'Zach Bryan'])
     # get_artist_id(['Morgan Wallen', 'Juice WRLD', 'Zach Bryan'])
     songs = find_songs_in_length(recs, 300)
-    add_to_playlist(songs)
+    # add_to_playlist(songs)
 if __name__ == '__main__':
     main()
