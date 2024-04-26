@@ -203,10 +203,9 @@ def main():                 # FOR USAGE WITH: main.py; DRIVER CODE to TEST funct
     sp=OAuth(user=user)
     recs = rec_ttracks_songs()
     # recs = rec_genre_songs(["pop", "country", "hip-hop"])
-    # recs = rec_artists_songs([])
     # recs = rec_artists_songs(['Morgan Wallen', 'Juice WRLD', 'Zach Bryan'])
     # get_artist_id(['Morgan Wallen', 'Juice WRLD', 'Zach Bryan'])
     songs = find_songs_in_length(recs, 300)
-    # add_to_playlist(songs)
+    add_to_playlist(songs)
 if __name__ == '__main__':
     main()

@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MusiTime</title>
+    <link rel="stylesheet" href="../static/css/style.css">
+    <script src="../static/script.js"></script>
+</head>
+<body>
+    <div class="sidebar">
+        <h2>Our Team</h2>
+        <ul>
+            <li><a href="https://www.linkedin.com/in/chase-quigley-1ab310245/" rel=noopener target="_blank"> Chase </a></li>
+            <img src="...">
+            <li><a> Mahdi </a></li>
+            <img src="...">
+            <li><a> Abdullah </a></li>
+            <img src="...">
+            <li><a> Tyler </a></li>
+            <img src="...">
+        </ul>
+    </div>
+    <div class="content">
+        <h1>MusiTime</h1>
+        <p>For a full list of Spotify Genres: <a rel="noopener" href="https://gist.github.com/andytlr/4104c667a62d8145aa3a" target="_blank"> Click Here</a></p>
+        <form action="http://localhost:5002/update", method='POST' id="form">
+            <p>NOTE: A max limit of 5 choices for entries of artists and genres</p>
+            <p> Enter Username: </p>
+            <p><input type="text" name="nm" placeholder="Ex: MusiTime24"></p>
+            <p> Enter Desired Time: </p>
+            <p><input type="text" name="length" placeholder="Ex: 20"></p>
+            <p>Long songs? Short Songs? (True/False)</p>
+            <p><input type="text" name="long_to_short" placeholder="Empty ='dont care'"></p>
+            <p>Base of artist? (Leave blank for NO)</p>
+            <p><input type="text" name="artists" placeholder="Juice WRLD"></p>
+            <p>Base of genre? (Leave blank for NO)</p>
+            <p><input type="text" name="genres" placeholder="hip-hop"></p>
+            <p><input type="submit" value="Submit" onclick="showSuccess()"/></p>
+        </form>
+        <h4>This project was created for CS310 at UMASS Boston</h4>
+    </div>
+    <div class="image-container">
+        <img src="../photos/start.png">
+        <img src="../photos/middle.png">
+        <img src="../photos/end.png">
+        <h1>Steps to get username</h1>
+    </div>
+</body>
+</html>
