@@ -21,7 +21,7 @@ def login():
             recomendations = rec_ttracks_songs()
         songs = find_songs_in_length(recomendations, length, long_to_short)
         add_to_playlist(songs) # 
-        return render_template('index.html')
+        return render_template("index.html")
     else:
         exit()
 
