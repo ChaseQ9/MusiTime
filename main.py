@@ -103,7 +103,8 @@ def _get_OPTION(songs: list, OPTION: str) -> list: # function returns id's of so
     return return_list
 # 04/17/24 -- Works
 def add_to_playlist(songs: list) -> None: # always the MusiTime playlist; assumes list being passed is ID's 
-    _clear_playlist(_user_has_playlist(user, "MusiTime"))
+    # _clear_playlist(_user_has_playlist(user, "MusiTime"))
+    create_playlist()
     sp.user_playlist_add_tracks(user=user,playlist_id=_user_has_playlist(user, "MusiTime"), tracks=songs, position=None)
     # print("add_to_playlist ends here...")
 
