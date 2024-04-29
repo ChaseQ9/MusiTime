@@ -5,47 +5,125 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MusiTime</title>
-    <link rel="stylesheet" href="../static/css/style.css">
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; /* Modern, clean font */
+            background-color: #121212;
+            color: white;
+        }
+        .sidebar {
+            width: 250px;
+            position: fixed;
+            height: 100%;
+            overflow: auto;
+            background-color: #000;
+            padding: 20px;
+        }
+        .sidebar h2, .sidebar a {
+            color: white;
+        }
+        .sidebar img {
+            width: 100%;
+            margin-top: 10px;
+            border-radius: 10px; /* Rounded corners for sidebar images */
+        }
+        .content {
+            margin-left: 250px;
+            padding: 20px;
+            min-height: 100vh;
+            background-color: #282828;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+            border-radius: 10px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .centered-title, .form-container, .image-container, .footer {
+            width: 100%;
+            max-width: 800px; /* Max width for content elements */
+            margin: auto; /* Centers the content horizontally */
+            text-align: center;
+        }
+        a {
+            color: #1DB954;
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+        input[type="text"], input[type="submit"] {
+            width: 100%;
+            max-width: 400px; /* Limits width of inputs to maintain usability */
+            padding: 10px;
+            margin-top: 5px;
+            border: none;
+            border-radius: 4px;
+            display: block; /* Makes inputs block level for easier centering */
+            margin-left: auto;
+            margin-right: auto;
+        }
+        input[type="submit"] {
+            background-color: #1DB954;
+            color: white;
+            cursor: pointer;
+            margin-bottom: 20px; /* Added space after the button */
+        }
+        input[type="submit"]:hover {
+            background-color: #179443;
+        }
+        .image-container img {
+            width: 100%;
+            max-width: 600px; /* Increased the image width further */
+            margin-top: 20px;
+            border-radius: 10px; /* Consistent rounded corners for all images */
+        }
+    </style>
     <script src="../static/script.js"></script>
 </head>
 <body>
     <div class="sidebar">
         <h2>Our Team</h2>
         <ul>
-            <li><a href="https://www.linkedin.com/in/chase-quigley-1ab310245/" rel="noopener" target="_blank"> Chase </a></li>
-            <img src="../photos/chase.jpg">
-            <li><a href="https://linkedin.com/in/mahdi-almosawi-49880b251/" rel="noopener" target="_blank"> Mahdi </a></li>
+            <li><a href="https://www.linkedin.com/in/chase-quigley-1ab310245/" rel="noopener" target="_blank">Chase</a></li>
+            <img src="../photos/chase.jpg" style="height: auto; aspect-ratio: 1 / 1; object-fit: cover;"> <!-- Ensuring consistent crop and size -->
+            <li><a href="https://linkedin.com/in/mahdi-almosawi-49880b251/" rel="noopener" target="_blank">Mahdi</a></li>
             <img src="../photos/mahdi.jpg">
-            <li><a href="https://www.linkedin.com/in/abdu114hh/" rel="noopener" target="_blank"> Abdullah </a></li>
+            <li><a href="https://www.linkedin.com/in/abdu114hh/" rel="noopener" target="_blank">Abdullah</a></li>
             <img src="../photos/Abdullah.jpg">
-            <li><a href="https://www.linkedin.com/in/tyedou3300/" rel="noopener" target="_blank"> Tyler </a></li>
+            <li><a href="https://www.linkedin.com/in/tyedou3300/" rel="noopener" target="_blank">Tyler</a></li>
             <img src="../photos/tyler.jpg">
         </ul>
     </div>
     <div class="content">
-        <h1>MusiTime</h1>
-        <p>For a full list of Spotify Genres: <a rel="noopener" href="https://gist.github.com/andytlr/4104c667a62d8145aa3a" target="_blank"> Click Here</a></p>
-        <form action="http://localhost:5002/update", method='POST' id="form">
-            <p>NOTE: A max limit of 5 choices for entries of artists and genres</p>
-            <p> Enter Username: </p>
-            <p><input type="text" name="nm" placeholder="Ex: MusiTime24"></p>
-            <p> Enter Desired Time (Minutes): </p>
-            <p><input type="text" name="length" placeholder="Ex: 20"></p>
-            <p>Long songs? Short Songs? (True/False)</p>
-            <p><input type="text" name="long_to_short" placeholder="Empty ='dont care'"></p>
-            <p>Base of artist? (Leave blank for NO)</p>
-            <p><input type="text" name="artists" placeholder="Juice WRLD"></p>
-            <p>Base of genre? (Leave blank for NO)</p>
-            <p><input type="text" name="genres" placeholder="hip-hop"></p>
-            <p><input type="submit" value="Submit" onclick="showSuccess()"/></p>
-        </form>
-        <h4>This project was created for CS310 at UMASS Boston</h4>
-    </div>
-    <div class="image-container">
-        <img src="../photos/start.png">
-        <img src="../photos/middle.png">
-        <img src="../photos/end.png">
-        <h1>Steps to get username</h1>
+        <h1 class="centered-title">MusiTime</h1>
+        <p>For a full list of Spotify Genres: <a href="https://gist.github.com/andytlr/4104c667a62d8145aa3a" rel="noopener" target="_blank">Click Here</a></p>
+        <div class="form-container">
+            <form action="http://localhost:5002/update" method="POST" id="form">
+                <p>NOTE: A max limit of 5 choices for entries of artists and genres</p>
+                <p>Enter Username:</p>
+                <input type="text" name="nm" placeholder="Ex: MusiTime24">
+                <p>Enter Desired Time (Minutes):</p>
+                <input type="text" name="length" placeholder="Ex: 20">
+                <p>Long songs? Short Songs? (True/False)</p>
+                <input type="text" name="long_to_short" placeholder="Empty ='don't care'">
+                <p>Base of artist? (Leave blank for NO)</p>
+                <input type="text" name="artists" placeholder="Juice WRLD">
+                <p>Base of genre? (Leave blank for NO)</p>
+                <input type="text" name="genres" placeholder="hip-hop">
+                <input type="submit" value="Submit" onclick="showSuccess()">
+            </form>
+        </div>
+        <h1 class="centered-title">Steps to get username</h1>
+        <div class="image-container">
+            <img src="../photos/start.png">
+            <img src="../photos/middle.png">
+            <img src="../photos/end.png">
+        </div>
+        <div class="footer">
+            <h4>This project was created for CS310 at UMASS Boston</h4>
+        </div>
     </div>
 </body>
 </html>
